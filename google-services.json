@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "431478808606",
+    "project_id": "crossfitapp-34cd9",
+    "storage_bucket": "crossfitapp-34cd9.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:431478808606:android:519e74795b4564ae2e4e0f",
+        "android_client_info": {
+          "package_name": "com.crossapp.cross"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBFZ1-qesTtlDupDsOmeGSgilt7yXIOAdE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
