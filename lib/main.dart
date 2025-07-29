@@ -1668,3 +1668,33 @@ class CoachDashboard extends StatelessWidget {
     );
   }
 }
+
+class WorkoutCreator extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text("Create Workout")),
+      body: Center(child: Text("Workout Creator Page")),
+    );
+  }
+}
+
+class AthleteProgress extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text("Athlete Progress")),
+      body: Center(child: Text("Athlete Progress Page")),
+    );
+  }
+}
+
+class CoachProfile extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text("Coach Profile")),
+      body: Center(child: Text("Coach Profile Page")),
+    );
+  }
+}
