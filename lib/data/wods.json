@@ -1,0 +1,27 @@
+
+[
+  {
+    "name": "Fran",
+    "description": "21-15-9 reps for time of: Thrusters (95/65 lb) Pull-ups",
+    "type": "For Time",
+    "timeCapMinutes": 10,
+    "movements": ["Thrusters", "Pull-ups"],
+    "warmUp": "3 Rounds: 10 Cal Row, 10 PVC Pass Throughs, 10 Overhead Squats"
+  },
+  {
+    "name": "Cindy",
+    "description": "As Many Rounds As Possible in 20 minutes of: 5 Pull-ups, 10 Push-ups, 15 Air Squats",
+    "type": "AMRAP",
+    "timeCapMinutes": 20,
+    "movements": ["Pull-ups", "Push-ups", "Air Squats"],
+    "warmUp": "2 Rounds: 10 Jumping Jacks, 10 Arm Circles, 10 Leg Swings"
+  },
+  {
+    "name": "Murph",
+    "description": "For time: 1 mile Run, 100 Pull-ups, 200 Push-ups, 300 Air Squats, 1 mile Run",
+    "type": "For Time",
+    "timeCapMinutes": 60,
+    "movements": ["Run", "Pull-ups", "Push-ups", "Air Squats"],
+    "warmUp": "800m Jog, then 2 rounds: 10 Push-ups, 10 Air Squats, 10 Ring Rows"
+  }
+]

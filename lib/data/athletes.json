@@ -1,0 +1,29 @@
+
+[
+  {
+    "id": "1",
+    "name": "Alex Johnson",
+    "email": "alex@example.com",
+    "prs": [
+      {"exercise": "Back Squat", "weight": "225 lbs", "date": "3 days ago"},
+      {"exercise": "Deadlift", "weight": "315 lbs", "date": "1 week ago"}
+    ],
+    "recentWorkouts": [
+      {"wod": "Fran", "result": "3:15 RX", "date": "3 days ago"},
+      {"wod": "Cindy", "result": "22 rounds + 5 reps", "date": "5 days ago"}
+    ]
+  },
+  {
+    "id": "2",
+    "name": "Sarah Miller",
+    "email": "sarah@example.com",
+    "prs": [
+      {"exercise": "Clean and Jerk", "weight": "155 lbs", "date": "2 weeks ago"},
+      {"exercise": "Snatch", "weight": "125 lbs", "date": "1 month ago"}
+    ],
+    "recentWorkouts": [
+      {"wod": "Fran", "result": "3:42 RX", "date": "3 days ago"},
+      {"wod": "Murph", "result": "50:12 Scaled", "date": "1 week ago"}
+    ]
+  }
+]
