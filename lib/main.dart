@@ -1674,7 +1674,26 @@ class WorkoutCreator extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text("Create Workout")),
-      body: Center(child: Text("Workout Creator Page")),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          children: [
+            TextField(
+              decoration: InputDecoration(labelText: 'Workout Name'),
+            ),
+            SizedBox(height: 16),
+            TextField(
+              decoration: InputDecoration(labelText: 'Description'),
+              maxLines: 3,
+            ),
+            SizedBox(height: 16),
+            ElevatedButton(
+              onPressed: () {},
+              child: Text('Save Workout'),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
@@ -1684,7 +1703,19 @@ class AthleteProgress extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text("Athlete Progress")),
-      body: Center(child: Text("Athlete Progress Page")),
+      body: ListView.builder(
+        itemCount: 10,
+        itemBuilder: (context, index) {
+          return ListTile(
+            leading: CircleAvatar(
+              child: Text('A${index + 1}'),
+            ),
+            title: Text('Athlete ${index + 1}'),
+            subtitle: Text('Fran: 3:4${index} RX'),
+            trailing: Icon(Icons.chevron_right),
+          );
+        },
+      ),
     );
   }
 }
@@ -1694,7 +1725,21 @@ class CoachProfile extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text("Coach Profile")),
-      body: Center(child: Text("Coach Profile Page")),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            CircleAvatar(
+              radius: 50,
+              child: Icon(Icons.person, size: 50),
+            ),
+            SizedBox(height: 16),
+            Text("Coach Malek", style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+            SizedBox(height: 8),
+            Text("Head Coach"),
+          ],
+        ),
+      ),
     );
   }
 }
