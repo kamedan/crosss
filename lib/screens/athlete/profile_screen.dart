@@ -51,21 +51,18 @@ class ProfileScreen extends StatelessWidget {
           SliverList(
             delegate: SliverChildBuilderDelegate(
               (BuildContext context, int index) {
-                if (index < menuItems.length) {
-                  final item = menuItems[index];
-                  return ListTile(
-                    leading: Icon(item["icon"] as IconData, color: Color(0xFFFF6B35)),
-                    title: Text(item["title"] as String),
-                    trailing: Icon(Icons.chevron_right),
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => item["page"] as Widget),
-                      );
-                    },
-                  );
-                }
-                return null;
+                final item = menuItems[index];
+                return ListTile(
+                  leading: Icon(item["icon"] as IconData, color: Color(0xFFFF6B35)),
+                  title: Text(item["title"] as String),
+                  trailing: Icon(Icons.chevron_right),
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => item["page"] as Widget),
+                    );
+                  },
+                );
               },
               childCount: menuItems.length,
             ),
