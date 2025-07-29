@@ -1,14 +1,9 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:crossapp/auth_service.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:provider/provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
   runApp(
     ChangeNotifierProvider(
       create: (context) => AuthService(),
@@ -53,29 +48,46 @@ class CrossFitApp extends StatelessWidget {
   }
 }
 
+class AuthService with ChangeNotifier {
+  UserModel? _user;
+
+  UserModel? get user => _user;
+
+  bool get isLoggedIn => _user != null;
+
+  Future<void> signIn(String email, String password) async {
+    if (email == 'demo1' && password == 'demo1') {
+      _user = UserModel(uid: '1', email: 'demo1', role: 'athlete');
+      notifyListeners();
+    } else if (email == 'demo2' && password == 'demo2') {
+      _user = UserModel(uid: '2', email: 'demo2', role: 'coach');
+      notifyListeners();
+    }
+  }
+
+  Future<void> signOut() async {
+    _user = null;
+    notifyListeners();
+  }
+}
+
+class UserModel {
+  final String uid;
+  final String email;
+  final String role;
+
+  UserModel({required this.uid, required this.email, required this.role});
+}
+
 class AuthWrapper extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final authService = Provider.of<AuthService>(context);
-    return StreamBuilder<User?>(
-      stream: authService.authStateChanges,
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.active) {
-          final User? user = snapshot.data;
-          if (user == null) {
-            return LoginScreen();
-          } else {
-            return MainScreen(isCoach: false);
-          }
-        } else {
-          return Scaffold(
-            body: Center(
-              child: CircularProgressIndicator(),
-            ),
-          );
-        }
-      },
-    );
+    if (authService.isLoggedIn) {
+      return MainScreen(isCoach: authService.user!.role == 'coach');
+    } else {
+      return LoginScreen();
+    }
   }
 }
 
@@ -107,7 +119,7 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
               SizedBox(height: 24),
               Text(
-                "CrossFit Pro",
+                "CrossFit By Malek",
                 style: TextStyle(
                   fontSize: 32,
                   fontWeight: FontWeight.bold,
@@ -183,7 +195,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
               ),
               SizedBox(height: 32),
-              _buildTextField("Email", Icons.email, controller: _emailController),
+              _buildTextField("Username", Icons.person, controller: _emailController),
               SizedBox(height: 16),
               _buildTextField("Password", Icons.lock, isPassword: true, controller: _passwordController),
               SizedBox(height: 32),
@@ -211,18 +223,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
               ),
               SizedBox(height: 16),
-              TextButton(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => SignUpScreen()),
-                  );
-                },
-                child: Text(
-                  "Don't have an account? Sign up",
-                  style: TextStyle(color: Color(0xFFFF6B35)),
-                ),
-              ),
+              
             ],
           ),
         ),
@@ -250,81 +251,7 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 }
 
-class SignUpScreen extends StatefulWidget {
-  @override
-  _SignUpScreenState createState() => _SignUpScreenState();
-}
 
-class _SignUpScreenState extends State<SignUpScreen> {
-  final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _passwordController = TextEditingController();
-
-  @override
-  Widget build(BuildContext context) {
-    final authService = Provider.of<AuthService>(context);
-
-    return Scaffold(
-      appBar: AppBar(
-        title: Text("Sign Up"),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            _buildTextField("Email", Icons.email, controller: _emailController),
-            SizedBox(height: 16),
-            _buildTextField("Password", Icons.lock, isPassword: true, controller: _passwordController),
-            SizedBox(height: 32),
-            SizedBox(
-              width: double.infinity,
-              height: 50,
-              child: ElevatedButton(
-                onPressed: () async {
-                  await authService.signUp(
-                    _emailController.text,
-                    _passwordController.text,
-                  );
-                  Navigator.pop(context);
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Color(0xFFFF6B35),
-                  foregroundColor: Colors.white,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(25),
-                  ),
-                ),
-                child: Text(
-                  "Sign Up",
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildTextField(String label, IconData icon, {bool isPassword = false, required TextEditingController controller}) {
-    return TextField(
-      controller: controller,
-      obscureText: isPassword,
-      decoration: InputDecoration(
-        labelText: label,
-        prefixIcon: Icon(icon, color: Color(0xFFFF6B35)),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(color: Colors.grey.withOpacity(0.3)),
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(color: Color(0xFFFF6B35)),
-        ),
-      ),
-    );
-  }
-}
 
 class MainScreen extends StatefulWidget {
   final bool isCoach;
@@ -413,6 +340,12 @@ class _MainScreenState extends State<MainScreen> {
 }
 
 class WODScreen extends StatelessWidget {
+  final List<WOD> wods = [
+    WOD(name: 'Fran', description: '21-15-9 reps for time of: Thrusters (95/65 lb) Pull-ups', type: 'For Time', timeCapMinutes: 10, movements: ['Thrusters', 'Pull-ups']),
+    WOD(name: 'Cindy', description: 'As Many Rounds As Possible in 20 minutes of: 5 Pull-ups, 10 Push-ups, 15 Air Squats', type: 'AMRAP', timeCapMinutes: 20, movements: ['Pull-ups', 'Push-ups', 'Air Squats']),
+    WOD(name: 'Murph', description: 'For time: 1 mile Run, 100 Pull-ups, 200 Push-ups, 300 Air Squats, 1 mile Run', type: 'For Time', timeCapMinutes: 60, movements: ['Run', 'Pull-ups', 'Push-ups', 'Air Squats']),
+  ];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -426,24 +359,11 @@ class WODScreen extends StatelessWidget {
           ),
         ],
       ),
-      body: StreamBuilder<QuerySnapshot>(
-        stream: FirebaseFirestore.instance.collection('wods').snapshots(),
-        builder: (context, snapshot) {
-          if (snapshot.hasError) {
-            return Center(child: Text('Something went wrong'));
-          }
-
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(child: CircularProgressIndicator());
-          }
-
-          return ListView(
-            padding: EdgeInsets.all(16),
-            children: snapshot.data!.docs.map((DocumentSnapshot document) {
-              Map<String, dynamic> data = document.data()! as Map<String, dynamic>;
-              return WODCard(wod: WOD.fromMap(data));
-            }).toList(),
-          );
+      body: ListView.builder(
+        padding: EdgeInsets.all(16),
+        itemCount: wods.length,
+        itemBuilder: (context, index) {
+          return WODCard(wod: wods[index]);
         },
       ),
     );
@@ -720,18 +640,6 @@ class _LogWorkoutScreenState extends State<LogWorkoutScreen> {
   }
 
   void _saveWorkout() {
-    final user = Provider.of<AuthService>(context, listen: false).user;
-    if (user != null) {
-      FirebaseFirestore.instance.collection('users').doc(user.uid).collection('workouts').add({
-        'wodName': widget.wod.name,
-        'time': _timeController.text,
-        'scale': selectedScale,
-        'notes': _notesController.text,
-        'completed': isCompleted,
-        'date': Timestamp.now(),
-      });
-    }
-
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text("Workout logged successfully!"),
@@ -770,113 +678,7 @@ class ProgressScreen extends StatelessWidget {
               style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
             SizedBox(height: 16),
-            StreamBuilder<QuerySnapshot>(
-              stream: FirebaseFirestore.instance
-                  .collection('users')
-                  .doc(user!.uid)
-                  .collection('workouts')
-                  .orderBy('date', descending: true)
-                  .limit(10)
-                  .snapshots(),
-              builder: (context, snapshot) {
-                if (snapshot.hasError) {
-                  return Center(child: Text('Something went wrong'));
-                }
-
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return Center(child: CircularProgressIndicator());
-                }
-
-                return Column(
-                  children: snapshot.data!.docs.map((DocumentSnapshot document) {
-                    Map<String, dynamic> data = document.data()! as Map<String, dynamic>;
-                    return Container(
-                      margin: EdgeInsets.only(bottom: 12),
-                      padding: EdgeInsets.all(16),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(12),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withOpacity(0.05),
-                            blurRadius: 10,
-                            offset: Offset(0, 2),
-                          ),
-                        ],
-                      ),
-                      child: Row(
-                        children: [
-                          Container(
-                            padding: EdgeInsets.all(8),
-                            decoration: BoxDecoration(
-                              color: data['scale'] == "RX"
-                                  ? Color(0xFFFF6B35).withOpacity(0.1)
-                                  : Colors.blue.withOpacity(0.1),
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                            child: Icon(
-                              Icons.fitness_center,
-                              color: data['scale'] == "RX"
-                                  ? Color(0xFFFF6B35)
-                                  : Colors.blue,
-                            ),
-                          ),
-                          SizedBox(width: 16),
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Row(
-                                  children: [
-                                    Text(
-                                      data['wodName'] ?? 'Unknown WOD',
-                                      style: TextStyle(fontWeight: FontWeight.bold),
-                                    ),
-                                    SizedBox(width: 8),
-                                    Container(
-                                      padding: EdgeInsets.symmetric(
-                                          horizontal: 8, vertical: 2),
-                                      decoration: BoxDecoration(
-                                        color: data['scale'] == "RX"
-                                            ? Color(0xFFFF6B35).withOpacity(0.2)
-                                            : Colors.blue.withOpacity(0.2),
-                                        borderRadius: BorderRadius.circular(10),
-                                      ),
-                                      child: Text(
-                                        data['scale'] ?? 'N/A',
-                                        style: TextStyle(
-                                          fontSize: 10,
-                                          fontWeight: FontWeight.bold,
-                                          color: data['scale'] == "RX"
-                                              ? Color(0xFFFF6B35)
-                                              : Colors.blue,
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                Text(
-                                  (data['date'] as Timestamp).toDate().toString(),
-                                  style: TextStyle(
-                                      color: Colors.grey[600], fontSize: 12),
-                                ),
-                              ],
-                            ),
-                          ),
-                          Text(
-                            data['time'] ?? 'N/A',
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              color: Color(0xFFFF6B35),
-                            ),
-                          ),
-                        ],
-                      ),
-                    );
-                  }).toList(),
-                );
-              },
-            ),
+            _buildRecentWorkouts(),
           ],
         ),
       ),
@@ -888,13 +690,13 @@ class ProgressScreen extends StatelessWidget {
       children: [
         Expanded(
             child: _buildStatCard(
-                "Workouts\nThis Week", "7", Icons.fitness_center)),
+                "Workouts\nThis Week", "3", Icons.fitness_center)),
         SizedBox(width: 12),
         Expanded(
-            child: _buildStatCard("PRs\nThis Month", "3", Icons.trending_up)),
+            child: _buildStatCard("PRs\nThis Month", "1", Icons.trending_up)),
         SizedBox(width: 12),
         Expanded(
-            child: _buildStatCard("Total\nWorkouts", "142", Icons.analytics)),
+            child: _buildStatCard("Total\nWorkouts", "58", Icons.analytics)),
       ],
     );
   }
@@ -999,6 +801,62 @@ class ProgressScreen extends StatelessWidget {
           .toList(),
     );
   }
+
+  Widget _buildRecentWorkouts() {
+    final recentWorkouts = [
+      {"wod": "Fran", "result": "3:42 RX", "date": "3 days ago"},
+      {"wod": "Cindy", "result": "20 rounds + 5 reps", "date": "5 days ago"},
+      {"wod": "Murph", "result": "55:12 Scaled", "date": "1 week ago"},
+    ];
+
+    return Column(
+      children: recentWorkouts.map((workout) {
+        return Container(
+          margin: EdgeInsets.only(bottom: 12),
+          padding: EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(12),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.05),
+                blurRadius: 10,
+                offset: Offset(0, 2),
+              ),
+            ],
+          ),
+          child: Row(
+            children: [
+              Icon(Icons.check_circle_outline, color: Color(0xFFFF6B35)),
+              SizedBox(width: 16),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      workout["wod"]!,
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    Text(
+                      workout["date"]!,
+                      style: TextStyle(color: Colors.grey[600], fontSize: 12),
+                    ),
+                  ],
+                ),
+              ),
+              Text(
+                workout["result"]!,
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  color: Color(0xFFFF6B35),
+                ),
+              ),
+            ],
+          ),
+        );
+      }).toList(),
+    );
+  }
 }
 
 class CommunityScreen extends StatelessWidget {
@@ -1044,95 +902,7 @@ class CommunityScreen extends StatelessWidget {
   }
 
   Widget _buildFeed() {
-    return StreamBuilder<QuerySnapshot>(
-      stream: FirebaseFirestore.instance.collectionGroup('workouts').orderBy('date', descending: true).snapshots(),
-      builder: (context, snapshot) {
-        if (snapshot.hasError) {
-          return Center(child: Text('Something went wrong'));
-        }
-
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return Center(child: CircularProgressIndicator());
-        }
-
-        return ListView(
-          padding: EdgeInsets.all(16),
-          children: snapshot.data!.docs.map((DocumentSnapshot document) {
-            Map<String, dynamic> data = document.data()! as Map<String, dynamic>;
-            return Container(
-              margin: EdgeInsets.only(bottom: 16),
-              padding: EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(12),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.05),
-                    blurRadius: 10,
-                    offset: Offset(0, 2),
-                  ),
-                ],
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      CircleAvatar(
-                        backgroundColor: Color(0xFFFF6B35),
-                        child: Text(
-                          "U", // Placeholder for user initial
-                          style: TextStyle(
-                              color: Colors.white, fontWeight: FontWeight.bold),
-                        ),
-                      ),
-                      SizedBox(width: 12),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              "User", // Placeholder for user name
-                              style: TextStyle(fontWeight: FontWeight.bold),
-                            ),
-                            Text(
-                              (data['date'] as Timestamp).toDate().toString(),
-                              style:
-                                  TextStyle(color: Colors.grey[600], fontSize: 12),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                  SizedBox(height: 12),
-                  Container(
-                    padding: EdgeInsets.all(12),
-                    decoration: BoxDecoration(
-                      color: Colors.grey.withOpacity(0.1),
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: Row(
-                      children: [
-                        Icon(Icons.fitness_center,
-                            color: Color(0xFFFF6B35), size: 16),
-                        SizedBox(width: 8),
-                        Text(
-                          "${data['wodName']} - ${data['time']}",
-                          style: TextStyle(fontWeight: FontWeight.w600),
-                        ),
-                      ],
-                    ),
-                  ),
-                  SizedBox(height: 12),
-                  Text(data['notes'] ?? ''),
-                ],
-              ),
-            );
-          }).toList(),
-        );
-      },
-    );
+    return Center(child: Text("The community feed will be displayed here."));
   }
 
   Widget _buildLeaderboard() {
@@ -1238,72 +1008,7 @@ class CommunityScreen extends StatelessWidget {
   }
 
   Widget _buildAthletes() {
-    return StreamBuilder<QuerySnapshot>(
-      stream: FirebaseFirestore.instance.collection('users').snapshots(),
-      builder: (context, snapshot) {
-        if (snapshot.hasError) {
-          return Center(child: Text('Something went wrong'));
-        }
-
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return Center(child: CircularProgressIndicator());
-        }
-
-        return ListView(
-          padding: EdgeInsets.all(16),
-          children: snapshot.data!.docs.map((DocumentSnapshot document) {
-            Map<String, dynamic> data = document.data()! as Map<String, dynamic>;
-            return Container(
-              margin: EdgeInsets.only(bottom: 12),
-              padding: EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(12),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.05),
-                    blurRadius: 10,
-                    offset: Offset(0, 2),
-                  ),
-                ],
-              ),
-              child: Row(
-                children: [
-                  Stack(
-                    children: [
-                      CircleAvatar(
-                        backgroundColor: Color(0xFFFF6B35),
-                        child: Text(
-                          (data['email'] as String)[0].toUpperCase(),
-                          style: TextStyle(
-                              color: Colors.white, fontWeight: FontWeight.bold),
-                        ),
-                      ),
-                    ],
-                  ),
-                  SizedBox(width: 16),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          data['email'] as String,
-                          style: TextStyle(fontWeight: FontWeight.bold),
-                        ),
-                      ],
-                    ),
-                  ),
-                  IconButton(
-                    icon: Icon(Icons.message_outlined, color: Color(0xFFFF6B35)),
-                    onPressed: () {},
-                  ),
-                ],
-              ),
-            );
-          }).toList(),
-        );
-      },
-    );
+    return Center(child: Text("A list of athletes will be displayed here."));
   }
 }
 
@@ -1343,7 +1048,7 @@ class ProfileScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildProfileHeader(User? user) {
+  Widget _buildProfileHeader(UserModel? user) {
     return Container(
       padding: EdgeInsets.all(20),
       decoration: BoxDecoration(
@@ -1960,36 +1665,6 @@ class CoachDashboard extends StatelessWidget {
           ],
         ),
       ),
-    );
-  }
-}
-
-class WorkoutCreator extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text("Create Workout")),
-      body: Center(child: Text("Workout Creator Page")),
-    );
-  }
-}
-
-class AthleteProgress extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text("Athlete Progress")),
-      body: Center(child: Text("Athlete Progress Page")),
-    );
-  }
-}
-
-class CoachProfile extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text("Coach Profile")),
-      body: Center(child: Text("Coach Profile Page")),
     );
   }
 }
