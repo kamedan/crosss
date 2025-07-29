@@ -107,124 +107,126 @@ class _LoginScreenState extends State<LoginScreen> {
 
     return Scaffold(
       body: SafeArea(
-        child: Padding(
-          padding: EdgeInsets.all(32),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(
-                Icons.fitness_center,
-                size: 80,
-                color: Color(0xFFFF6B35),
-              ),
-              SizedBox(height: 24),
-              Text(
-                "CrossFit By Malek",
-                style: TextStyle(
-                  fontSize: 32,
-                  fontWeight: FontWeight.bold,
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: EdgeInsets.all(32),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(
+                  Icons.fitness_center,
+                  size: 80,
                   color: Color(0xFFFF6B35),
                 ),
-              ),
-              SizedBox(height: 8),
-              Text(
-                "Train. Track. Transform.",
-                style: TextStyle(
-                  fontSize: 16,
-                  color: Theme.of(context)
-                      .textTheme
-                      .bodyLarge
-                      ?.color
-                      ?.withOpacity(0.7),
+                SizedBox(height: 24),
+                Text(
+                  "CrossFit By Malek",
+                  style: TextStyle(
+                    fontSize: 32,
+                    fontWeight: FontWeight.bold,
+                    color: Color(0xFFFF6B35),
+                  ),
                 ),
-              ),
-              SizedBox(height: 48),
-              Container(
-                padding: EdgeInsets.all(4),
-                decoration: BoxDecoration(
-                  color: Colors.grey.withOpacity(0.1),
-                  borderRadius: BorderRadius.circular(25),
+                SizedBox(height: 8),
+                Text(
+                  "Train. Track. Transform.",
+                  style: TextStyle(
+                    fontSize: 16,
+                    color: Theme.of(context)
+                        .textTheme
+                        .bodyLarge
+                        ?.color
+                        ?.withOpacity(0.7),
+                  ),
                 ),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: GestureDetector(
-                        onTap: () => setState(() => isCoach = false),
-                        child: Container(
-                          padding: EdgeInsets.symmetric(vertical: 12),
-                          decoration: BoxDecoration(
-                            color: !isCoach
-                                ? Color(0xFFFF6B35)
-                                : Colors.transparent,
-                            borderRadius: BorderRadius.circular(25),
-                          ),
-                          child: Text(
-                            "Athlete",
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              color: !isCoach ? Colors.white : Colors.grey[600],
-                              fontWeight: FontWeight.w600,
+                SizedBox(height: 48),
+                Container(
+                  padding: EdgeInsets.all(4),
+                  decoration: BoxDecoration(
+                    color: Colors.grey.withOpacity(0.1),
+                    borderRadius: BorderRadius.circular(25),
+                  ),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: GestureDetector(
+                          onTap: () => setState(() => isCoach = false),
+                          child: Container(
+                            padding: EdgeInsets.symmetric(vertical: 12),
+                            decoration: BoxDecoration(
+                              color: !isCoach
+                                  ? Color(0xFFFF6B35)
+                                  : Colors.transparent,
+                              borderRadius: BorderRadius.circular(25),
+                            ),
+                            child: Text(
+                              "Athlete",
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                color: !isCoach ? Colors.white : Colors.grey[600],
+                                fontWeight: FontWeight.w600,
+                              ),
                             ),
                           ),
                         ),
                       ),
-                    ),
-                    Expanded(
-                      child: GestureDetector(
-                        onTap: () => setState(() => isCoach = true),
-                        child: Container(
-                          padding: EdgeInsets.symmetric(vertical: 12),
-                          decoration: BoxDecoration(
-                            color: isCoach
-                                ? Color(0xFFFF6B35)
-                                : Colors.transparent,
-                            borderRadius: BorderRadius.circular(25),
-                          ),
-                          child: Text(
-                            "Coach",
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              color: isCoach ? Colors.white : Colors.grey[600],
-                              fontWeight: FontWeight.w600,
+                      Expanded(
+                        child: GestureDetector(
+                          onTap: () => setState(() => isCoach = true),
+                          child: Container(
+                            padding: EdgeInsets.symmetric(vertical: 12),
+                            decoration: BoxDecoration(
+                              color: isCoach
+                                  ? Color(0xFFFF6B35)
+                                  : Colors.transparent,
+                              borderRadius: BorderRadius.circular(25),
+                            ),
+                            child: Text(
+                              "Coach",
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                color: isCoach ? Colors.white : Colors.grey[600],
+                                fontWeight: FontWeight.w600,
+                              ),
                             ),
                           ),
                         ),
                       ),
-                    ),
-                  ],
-                ),
-              ),
-              SizedBox(height: 32),
-              _buildTextField("Username", Icons.person, controller: _emailController),
-              SizedBox(height: 16),
-              _buildTextField("Password", Icons.lock, isPassword: true, controller: _passwordController),
-              SizedBox(height: 32),
-              SizedBox(
-                width: double.infinity,
-                height: 50,
-                child: ElevatedButton(
-                  onPressed: () {
-                    authService.signIn(
-                      _emailController.text,
-                      _passwordController.text,
-                    );
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Color(0xFFFF6B35),
-                    foregroundColor: Colors.white,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(25),
-                    ),
-                  ),
-                  child: Text(
-                    "Sign In",
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+                    ],
                   ),
                 ),
-              ),
-              SizedBox(height: 16),
-              
-            ],
+                SizedBox(height: 32),
+                _buildTextField("Username", Icons.person, controller: _emailController),
+                SizedBox(height: 16),
+                _buildTextField("Password", Icons.lock, isPassword: true, controller: _passwordController),
+                SizedBox(height: 32),
+                SizedBox(
+                  width: double.infinity,
+                  height: 50,
+                  child: ElevatedButton(
+                    onPressed: () {
+                      authService.signIn(
+                        _emailController.text,
+                        _passwordController.text,
+                      );
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Color(0xFFFF6B35),
+                      foregroundColor: Colors.white,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(25),
+                      ),
+                    ),
+                    child: Text(
+                      "Sign In",
+                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+                    ),
+                  ),
+                ),
+                SizedBox(height: 16),
+                
+              ],
+            ),
           ),
         ),
       ),
@@ -341,9 +343,9 @@ class _MainScreenState extends State<MainScreen> {
 
 class WODScreen extends StatelessWidget {
   final List<WOD> wods = [
-    WOD(name: 'Fran', description: '21-15-9 reps for time of: Thrusters (95/65 lb) Pull-ups', type: 'For Time', timeCapMinutes: 10, movements: ['Thrusters', 'Pull-ups']),
-    WOD(name: 'Cindy', description: 'As Many Rounds As Possible in 20 minutes of: 5 Pull-ups, 10 Push-ups, 15 Air Squats', type: 'AMRAP', timeCapMinutes: 20, movements: ['Pull-ups', 'Push-ups', 'Air Squats']),
-    WOD(name: 'Murph', description: 'For time: 1 mile Run, 100 Pull-ups, 200 Push-ups, 300 Air Squats, 1 mile Run', type: 'For Time', timeCapMinutes: 60, movements: ['Run', 'Pull-ups', 'Push-ups', 'Air Squats']),
+    WOD(name: 'Fran', description: '21-15-9 reps for time of: Thrusters (95/65 lb) Pull-ups', type: 'For Time', timeCapMinutes: 10, movements: ['Thrusters', 'Pull-ups'], warmUp: '3 Rounds: 10 Cal Row, 10 PVC Pass Throughs, 10 Overhead Squats'),
+    WOD(name: 'Cindy', description: 'As Many Rounds As Possible in 20 minutes of: 5 Pull-ups, 10 Push-ups, 15 Air Squats', type: 'AMRAP', timeCapMinutes: 20, movements: ['Pull-ups', 'Push-ups', 'Air Squats'], warmUp: '2 Rounds: 10 Jumping Jacks, 10 Arm Circles, 10 Leg Swings'),
+    WOD(name: 'Murph', description: 'For time: 1 mile Run, 100 Pull-ups, 200 Push-ups, 300 Air Squats, 1 mile Run', type: 'For Time', timeCapMinutes: 60, movements: ['Run', 'Pull-ups', 'Push-ups', 'Air Squats'], warmUp: '800m Jog, then 2 rounds: 10 Push-ups, 10 Air Squats, 10 Ring Rows'),
   ];
 
   @override
@@ -376,6 +378,7 @@ class WOD {
   final String type;
   final int timeCapMinutes;
   final List<String> movements;
+  final String warmUp;
 
   WOD({
     required this.name,
@@ -383,6 +386,7 @@ class WOD {
     required this.type,
     required this.timeCapMinutes,
     required this.movements,
+    required this.warmUp,
   });
 
   factory WOD.fromMap(Map<String, dynamic> map) {
@@ -392,6 +396,7 @@ class WOD {
       type: map['type'] ?? '',
       timeCapMinutes: map['timeCapMinutes'] ?? 0,
       movements: List<String>.from(map['movements'] ?? []),
+      warmUp: map['warmUp'] ?? '',
     );
   }
 }
@@ -457,6 +462,24 @@ class WODCard extends StatelessWidget {
               ),
             ),
             SizedBox(height: 16),
+            Text(
+              'Warm-up',
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            ),
+            SizedBox(height: 8),
+            Text(
+              wod.warmUp,
+              style: TextStyle(
+                fontSize: 14,
+                color: Theme.of(context)
+                    .textTheme
+                    .bodyLarge
+                    ?.color
+                    ?.withOpacity(0.8),
+                height: 1.4,
+              ),
+            ),
+            SizedBox(height: 16),
             Row(
               children: [
                 Icon(Icons.fitness_center, size: 16, color: Colors.grey[600]),
@@ -510,10 +533,18 @@ class LogWorkoutScreen extends StatefulWidget {
 }
 
 class _LogWorkoutScreenState extends State<LogWorkoutScreen> {
-  final _timeController = TextEditingController();
   final _notesController = TextEditingController();
   String selectedScale = "RX";
   bool isCompleted = false;
+  Map<String, TextEditingController> exerciseControllers = {};
+
+  @override
+  void initState() {
+    super.initState();
+    for (var movement in widget.wod.movements) {
+      exerciseControllers[movement] = TextEditingController();
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -586,23 +617,24 @@ class _LogWorkoutScreenState extends State<LogWorkoutScreen> {
               }).toList(),
             ),
             SizedBox(height: 24),
-            Text(
-              "Time",
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            ),
-            SizedBox(height: 12),
-            TextField(
-              controller: _timeController,
-              decoration: InputDecoration(
-                hintText: "MM:SS",
-                border:
-                    OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
-                focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
-                  borderSide: BorderSide(color: Color(0xFFFF6B35)),
+            ...widget.wod.movements.map((movement) {
+              return Padding(
+                padding: const EdgeInsets.only(bottom: 16.0),
+                child: TextField(
+                  controller: exerciseControllers[movement],
+                  decoration: InputDecoration(
+                    labelText: movement,
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      borderSide: BorderSide(color: Color(0xFFFF6B35)),
+                    ),
+                  ),
                 ),
-              ),
-            ),
+              );
+            }).toList(),
             SizedBox(height: 24),
             Row(
               children: [
@@ -1445,7 +1477,7 @@ class CoachDashboard extends StatelessWidget {
             SizedBox(height: 24),
             _buildRecentActivity(),
             SizedBox(height: 24),
-            _buildQuickActions(),
+            _buildQuickActions(context),
           ],
         ),
       ),
@@ -1621,7 +1653,7 @@ class CoachDashboard extends StatelessWidget {
     );
   }
 
-  Widget _buildQuickActions() {
+  Widget _buildQuickActions(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -1632,7 +1664,9 @@ class CoachDashboard extends StatelessWidget {
         SizedBox(height: 16),
         Row(
           children: [
-            Expanded(child: _buildActionCard("Create WOD", Icons.add, () {})),
+            Expanded(child: _buildActionCard("Create WOD", Icons.add, () {
+              Navigator.push(context, MaterialPageRoute(builder: (context) => WorkoutCreator()));
+            })),
             SizedBox(width: 12),
             Expanded(child: _buildActionCard("Message All", Icons.message, () {})),
           ],
@@ -1687,6 +1721,11 @@ class WorkoutCreator extends StatelessWidget {
               maxLines: 3,
             ),
             SizedBox(height: 16),
+            TextField(
+              decoration: InputDecoration(labelText: 'Warm-up'),
+              maxLines: 3,
+            ),
+            SizedBox(height: 16),
             ElevatedButton(
               onPressed: () {},
               child: Text('Save Workout'),
@@ -1713,8 +1752,30 @@ class AthleteProgress extends StatelessWidget {
             title: Text('Athlete ${index + 1}'),
             subtitle: Text('Fran: 3:4${index} RX'),
             trailing: Icon(Icons.chevron_right),
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => AthleteDetailScreen(athleteName: 'Athlete ${index + 1}')),
+              );
+            },
           );
         },
+      ),
+    );
+  }
+}
+
+class AthleteDetailScreen extends StatelessWidget {
+  final String athleteName;
+
+  const AthleteDetailScreen({Key? key, required this.athleteName}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text(athleteName)),
+      body: Center(
+        child: Text('Details for $athleteName'),
       ),
     );
   }
@@ -1723,6 +1784,7 @@ class AthleteProgress extends StatelessWidget {
 class CoachProfile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    final authService = Provider.of<AuthService>(context, listen: false);
     return Scaffold(
       appBar: AppBar(title: Text("Coach Profile")),
       body: Center(
@@ -1737,6 +1799,13 @@ class CoachProfile extends StatelessWidget {
             Text("Coach Malek", style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
             SizedBox(height: 8),
             Text("Head Coach"),
+            SizedBox(height: 32),
+            ElevatedButton(
+              onPressed: () {
+                authService.signOut();
+              },
+              child: Text("Sign Out"),
+            ),
           ],
         ),
       ),
